@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manufacturers - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>AgriSphere AI</h1>
+        <p>Manufacturer Marketplace</p>
+    </header>
+
+    <main>
+
+        <section class="hero">
+
+            <h2>🏭 Agricultural Manufacturers</h2>
+
+            <p>
+                Explore agricultural machinery manufacturers and suppliers.
+            </p>
+
+        </section>
+
+
+        <section id="manufacturers-container" class="resource-grid">
+
+            <p>Loading manufacturers...</p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>AgriSphere AI © 2026</p>
+
+    </footer>
+
+
+    <script>
+
+        async function loadManufacturers() {
+
+            const container =
+                document.getElementById("manufacturers-container");
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/resource/manufacturers"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Unable to load manufacturers");
+                }
+
+                const manufacturers =
+                    await response.json();
+
+                container.innerHTML = "";
+
+                manufacturers.forEach(manufacturer => {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.className = "resource-card";
+
+                    card.innerHTML = `
+
+                        <h3>🏭 ${manufacturer.name}</h3>
+
+                        <p>
+                            <strong>Specialization:</strong>
+                            ${manufacturer.specialization || "Not specified"}
+                        </p>
+
+                        <button onclick="viewManufacturer(${manufacturer.id})">
+                            View Details
+                        </button>
+
+                    `;
+
+                    container.appendChild(card);
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                container.innerHTML = `
+
+                    <p>
+                        Unable to load manufacturers.
+                    </p>
+
+                `;
+
+            }
+
+        }
+
+
+        function viewManufacturer(id) {
+
+            window.location.href =
+                "manufacturer-details.html?id=" + id;
+
+        }
+
+
+        // BUTTON ACTION:
+        // Load manufacturers from Resource Center API.
+
+        loadManufacturers();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Insurance - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>AgriSphere AI</h1>
+    <p>Agricultural Insurance</p>
+</header>
+
+<main>
+
+    <section class="hero">
+
+        <h2>🛡️ Agricultural Insurance</h2>
+
+        <p>
+            Explore agricultural insurance options and
+            protection available for farmers.
+        </p>
+
+    </section>
+
+
+    <section class="resource-grid" id="insurance-container">
+
+        <p>Loading insurance options...</p>
+
+    </section>
+
+</main>
+
+
+<footer>
+    <p>AgriSphere AI © 2026</p>
+</footer>
+
+
+<script>
+
+async function loadInsurance() {
+
+    const container =
+        document.getElementById("insurance-container");
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:5000/api/resource/insurance"
+        );
+
+        const insuranceOptions =
+            await response.json();
+
+        container.innerHTML = "";
+
+
+        insuranceOptions.forEach(insurance => {
+
+            const card =
+                document.createElement("div");
+
+            card.className = "resource-card";
+
+
+            card.innerHTML = `
+
+                <h3>🛡️ ${insurance.name}</h3>
+
+                <p>
+                    ${insurance.description}
+                </p>
+
+                <button
+                    onclick="viewInsurance(${insurance.id})">
+                    View Details
+                </button>
+
+            `;
+
+
+            container.appendChild(card);
+
+        });
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            "<p>Unable to load insurance options.</p>";
+    }
+}
+
+
+function viewInsurance(id) {
+
+    window.location.href =
+        "insurance-details.html?id=" + id;
+}
+
+
+loadInsurance();
+
+</script>
+
+</body>
+
+</html>

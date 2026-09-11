@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Insurance Details - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>AgriSphere AI</h1>
+    <p>Insurance Details</p>
+</header>
+
+<main>
+
+    <section class="resource-details">
+
+        <div class="details-card" id="insurance-details">
+
+            <p>Loading insurance details...</p>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>AgriSphere AI © 2026</p>
+</footer>
+
+
+<script>
+
+const urlParams =
+    new URLSearchParams(window.location.search);
+
+const insuranceId =
+    urlParams.get("id");
+
+
+async function loadInsuranceDetails() {
+
+    const container =
+        document.getElementById("insurance-details");
+
+    try {
+
+        const response = await fetch(
+            `http://127.0.0.1:5000/api/resource/insurance/${insuranceId}`
+        );
+
+        const insurance =
+            await response.json();
+
+        if (!response.ok) {
+
+            container.innerHTML =
+                `<p>${insurance.message}</p>`;
+
+            return;
+        }
+
+
+        container.innerHTML = `
+
+            <h2>🛡️ ${insurance.name}</h2>
+
+            <p>
+                <strong>Description:</strong>
+                ${insurance.description}
+            </p>
+
+            <p>
+                <strong>Coverage:</strong>
+                ${insurance.coverage}
+            </p>
+
+            <p>
+                <strong>Eligibility:</strong>
+                ${insurance.eligibility}
+            </p>
+
+            <p>
+                <strong>Benefits:</strong>
+                ${insurance.benefits}
+            </p>
+
+            <p>
+                <strong>Application Process:</strong>
+                ${insurance.application_process}
+            </p>
+
+            <p>
+                <strong>Official Website:</strong>
+                <a href="${insurance.official_website}"
+                   target="_blank">
+                    Visit Official Website
+                </a>
+            </p>
+
+
+            <div class="details-actions">
+
+                <button onclick="showInsuranceForm()">
+                    📝 Apply / Request Assistance
+                </button>
+
+                <button onclick="goBack()">
+                    ← Back to Insurance
+                </button>
+
+            </div>
+
+        `;
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            "<p>Unable to load insurance details.</p>";
+    }
+}
+
+
+function goBack() {
+
+    window.location.href =
+        "insurance.html";
+}
+
+
+function showInsuranceForm() {
+
+    const container =
+        document.getElementById("insurance-details");
+
+    container.innerHTML += `
+
+        <div class="details-card" id="insurance-form">
+
+            <h2>📝 Apply / Request Assistance</h2>
+
+            <p>
+                <strong>Your Name:</strong>
+                <input
+                    type="text"
+                    id="customer-name"
+                    placeholder="Enter your name">
+            </p>
+
+            <p>
+                <strong>Phone Number:</strong>
+                <input
+                    type="text"
+                    id="customer-phone"
+                    placeholder="Enter phone number">
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                <input
+                    type="text"
+                    id="customer-location"
+                    placeholder="Enter your location">
+            </p>
+
+            <p>
+                <strong>Remarks:</strong>
+                <input
+                    type="text"
+                    id="remarks"
+                    placeholder="Enter any additional information">
+            </p>
+
+            <div class="details-actions">
+
+                <button onclick="submitInsuranceRequest()">
+                    Submit Request
+                </button>
+
+            </div>
+
+            <p id="insurance-message"></p>
+
+        </div>
+
+    `;
+}
+
+
+async function submitInsuranceRequest() {
+    const name = document.getElementById("customer-name").value;
+    const phone = document.getElementById("customer-phone").value;
+    const location = document.getElementById("customer-location").value;
+    const remarks = document.getElementById("remarks").value;
+    const message = document.getElementById("insurance-message");
+
+    if (!name || !phone || !location) {
+        message.innerText = "Please fill all required fields.";
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `http://127.0.0.1:5000/api/resource/insurance/${insuranceId}/request`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    customer_name: name,
+                    customer_phone: phone,
+                    location: location,
+                    remarks: remarks
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            message.innerText =
+                result.message || "Request submission failed.";
+            return;
+        }
+
+        message.innerText =
+            `✅ ${result.message} Request ID: ${result.request_id}`;
+
+    } catch (error) {
+        console.error(error);
+
+        message.innerText =
+            "Unable to submit request. Please try again.";
+    }
+}
+
+
+loadInsuranceDetails();
+
+</script>
+
+</body>
+
+</html>

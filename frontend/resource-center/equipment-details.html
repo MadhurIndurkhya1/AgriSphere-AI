@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Equipment Details - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>AgriSphere AI</h1>
+        <p>Equipment Details</p>
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+            <h2>🚜 Equipment Details</h2>
+            <p>Complete information about the selected equipment.</p>
+        </section>
+
+
+        <section id="equipment-details" class="resource-details">
+
+            <p>Loading equipment details...</p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>AgriSphere AI © 2026</p>
+    </footer>
+
+
+    <script>
+
+        async function loadEquipmentDetails() {
+
+            const detailsContainer =
+                document.getElementById("equipment-details");
+
+            // Get equipment ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const equipmentId = urlParams.get("id");
+
+            if (!equipmentId) {
+
+                detailsContainer.innerHTML = `
+                    <p>Equipment ID not found.</p>
+                    <button onclick="goBack()">
+                        Back to Equipment
+                    </button>
+                `;
+
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    `http://127.0.0.1:5000/api/resource/equipment/${equipmentId}`
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error("Equipment not found");
+
+                }
+
+
+                const equipment = await response.json();
+
+
+                detailsContainer.innerHTML = `
+
+                    <div class="details-card">
+
+                        <h2>🚜 ${equipment.name}</h2>
+
+                        <p>
+                            <strong>Type:</strong>
+                            ${equipment.type}
+                        </p>
+
+                        <p>
+                            <strong>Description:</strong>
+                            ${equipment.description || "No description available"}
+                        </p>
+
+                        <p>
+                            <strong>Location:</strong>
+                            ${equipment.location || "Not specified"}
+                        </p>
+
+                        <p>
+                            <strong>Rent per day:</strong>
+                            ₹${equipment.rent_per_day || "N/A"}
+                        </p>
+
+                        <p>
+                            <strong>Availability:</strong>
+                            ${
+                                equipment.availability
+                                ? "Available"
+                                : "Not Available"
+                            }
+                        </p>
+
+                        <p>
+                            <strong>Owner:</strong>
+                            ${equipment.owner_name || "Not specified"}
+                        </p>
+
+
+                        <div class="details-actions">
+
+    <button onclick="showRentalForm()">
+        🚜 Rent Equipment
+    </button>
+
+    <button onclick="goBack()">
+        ← Back to Equipment
+    </button>
+
+</div>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            catch (error) {
+
+                console.error(error);
+
+                detailsContainer.innerHTML = `
+
+                    <div class="details-card">
+
+                        <h2>Equipment Not Found</h2>
+
+                        <p>
+                            Unable to load the equipment details.
+                        </p>
+
+                        <button onclick="goBack()">
+                            ← Back to Equipment
+                        </button>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        function goBack() {
+
+            window.location.href = "equipment.html";
+
+        }
+
+        function showRentalForm() {
+
+    const detailsContainer =
+        document.getElementById("equipment-details");
+
+    detailsContainer.innerHTML += `
+
+        <div class="details-card" id="rental-form">
+
+            <h2>🚜 Rent Equipment</h2>
+
+            <p>
+                <strong>Customer Name:</strong>
+                <input type="text" id="customer-name"
+                       placeholder="Enter your name">
+            </p>
+
+            <p>
+                <strong>Phone Number:</strong>
+                <input type="text" id="customer-phone"
+                       placeholder="Enter phone number">
+            </p>
+
+            <p>
+                <strong>Rental Date:</strong>
+                <input type="date" id="rental-date">
+            </p>
+
+            <p>
+                <strong>Number of Days:</strong>
+                <input type="number" id="number-of-days"
+                       min="1" value="1">
+            </p>
+
+            <div class="details-actions">
+
+                <button onclick="submitRentalRequest()">
+                    Submit Rental Request
+                </button>
+
+            </div>
+
+            <p id="rental-message"></p>
+
+        </div>
+
+    `;
+
+}
+async function submitRentalRequest() {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const equipmentId = urlParams.get("id");
+
+    const customerName =
+        document.getElementById("customer-name").value;
+
+    const customerPhone =
+        document.getElementById("customer-phone").value;
+
+    const rentalDate =
+        document.getElementById("rental-date").value;
+
+    const numberOfDays =
+        document.getElementById("number-of-days").value;
+
+    const message =
+        document.getElementById("rental-message");
+
+
+    if (!customerName || !rentalDate || !numberOfDays) {
+
+        message.innerText =
+            "Please fill all required fields.";
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `http://127.0.0.1:5000/api/resource/equipment/${equipmentId}/rent`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    customer_name: customerName,
+                    customer_phone: customerPhone,
+                    rental_date: rentalDate,
+                    number_of_days: numberOfDays
+                })
+            }
+        );
+
+
+        const result = await response.json();
+
+
+        if (!response.ok) {
+
+            message.innerText =
+                result.message || "Rental request failed.";
+
+            return;
+        }
+
+
+        message.innerText =
+            `✅ ${result.message} Total Cost: ₹${result.total_cost}`;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        message.innerText =
+            "Unable to submit rental request.";
+
+    }
+
+}
+
+
+        // BUTTON ACTION:
+        // Load selected equipment details from Resource Center API.
+
+        loadEquipmentDetails();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Labour Hiring - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>AgriSphere AI</h1>
+        <p>Labour Hiring</p>
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <h2>👨‍🌾 Agricultural Workers</h2>
+
+            <p>
+                Find skilled agricultural workers for your farming needs.
+            </p>
+
+        </section>
+
+
+        <section id="workers-container" class="resource-grid">
+
+            <p>Loading workers...</p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>AgriSphere AI © 2026</p>
+
+    </footer>
+
+
+    <script>
+
+        async function loadWorkers() {
+
+            const container =
+                document.getElementById("workers-container");
+
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/resource/workers"
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error("Unable to load workers");
+
+                }
+
+
+                const workers = await response.json();
+
+
+                container.innerHTML = "";
+
+
+                workers.forEach(worker => {
+
+                    const card =
+                        document.createElement("div");
+
+
+                    card.className = "resource-card";
+
+
+                    card.innerHTML = `
+
+                        <h3>👨‍🌾 ${worker.name}</h3>
+
+                        <p>
+                            <strong>Skill:</strong>
+                            ${worker.skill}
+                        </p>
+
+                        <button onclick="viewWorker(${worker.id})">
+                            View Details
+                        </button>
+
+                    `;
+
+
+                    container.appendChild(card);
+
+                });
+
+            }
+
+
+            catch (error) {
+
+                console.error(error);
+
+
+                container.innerHTML = `
+
+                    <p>
+                        Unable to load workers.
+                    </p>
+
+                `;
+
+            }
+
+        }
+
+
+        function viewWorker(id) {
+
+            window.location.href =
+                "worker-details.html?id=" + id;
+
+        }
+
+
+        // BUTTON ACTION:
+        // Load workers from Resource Center API.
+
+        loadWorkers();
+
+    </script>
+
+</body>
+
+</html>
