@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Worker Details - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>AgriSphere AI</h1>
+        <p>Worker Details</p>
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <h2>👨‍🌾 Worker Details</h2>
+
+            <p>
+                Complete information about the selected worker.
+            </p>
+
+        </section>
+
+
+        <section id="worker-details" class="resource-details">
+
+            <p>Loading worker details...</p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>AgriSphere AI © 2026</p>
+
+    </footer>
+
+
+    <script>
+
+        async function loadWorkerDetails() {
+
+            const detailsContainer =
+                document.getElementById("worker-details");
+
+
+            // Get worker ID from URL
+
+            const urlParams =
+                new URLSearchParams(window.location.search);
+
+            const workerId =
+                urlParams.get("id");
+
+
+            if (!workerId) {
+
+                detailsContainer.innerHTML = `
+
+                    <div class="details-card">
+
+                        <h2>Worker ID Not Found</h2>
+
+                        <button onclick="goBack()">
+                            ← Back to Workers
+                        </button>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    `http://127.0.0.1:5000/api/resource/workers/${workerId}`
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error("Worker not found");
+
+                }
+
+
+                const worker =
+                    await response.json();
+
+
+                detailsContainer.innerHTML = `
+
+                    <div class="details-card">
+
+                        <h2>👨‍🌾 ${worker.name}</h2>
+
+
+                        <p>
+                            <strong>Skill:</strong>
+                            ${worker.skill}
+                        </p>
+
+
+                        <p>
+                            <strong>Experience:</strong>
+                            ${worker.experience_years} years
+                        </p>
+
+
+                        <p>
+                            <strong>Location:</strong>
+                            ${worker.location || "Not specified"}
+                        </p>
+
+
+                        <p>
+                            <strong>Daily Wage:</strong>
+                            ₹${worker.daily_wage || "N/A"}
+                        </p>
+
+
+                        <p>
+                            <strong>Availability:</strong>
+
+                            ${
+                                worker.availability
+                                ? "Available"
+                                : "Not Available"
+                            }
+
+                        </p>
+
+
+                        <p>
+                            <strong>Rating:</strong>
+                            ⭐ ${worker.rating || "Not rated"}
+                        </p>
+
+
+                        <p>
+                            <strong>Phone:</strong>
+                            ${worker.phone || "Not available"}
+                        </p>
+
+
+                        <div class="details-actions">
+
+    <button onclick="showHiringForm()">
+        👨‍🌾 Hire Worker
+    </button>
+
+    <button onclick="goBack()">
+        ← Back to Workers
+    </button>
+
+</div>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            catch (error) {
+
+                console.error(error);
+
+
+                detailsContainer.innerHTML = `
+
+                    <div class="details-card">
+
+                        <h2>Worker Not Found</h2>
+
+                        <p>
+                            Unable to load the worker details.
+                        </p>
+
+                        <button onclick="goBack()">
+                            ← Back to Workers
+                        </button>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        function goBack() {
+
+            window.location.href = "worker.html";
+
+        }
+        function showHiringForm() {
+
+    const detailsContainer =
+        document.getElementById("worker-details");
+
+    detailsContainer.innerHTML += `
+
+        <div class="details-card" id="hiring-form">
+
+            <h2>👨‍🌾 Hire Worker</h2>
+
+            <p>
+                <strong>Customer Name:</strong>
+                <input
+                    type="text"
+                    id="customer-name"
+                    placeholder="Enter your name">
+            </p>
+
+            <p>
+                <strong>Phone Number:</strong>
+                <input
+                    type="text"
+                    id="customer-phone"
+                    placeholder="Enter phone number">
+            </p>
+
+            <p>
+                <strong>Hiring Date:</strong>
+                <input
+                    type="date"
+                    id="hiring-date">
+            </p>
+
+            <p>
+                <strong>Number of Days:</strong>
+                <input
+                    type="number"
+                    id="number-of-days"
+                    min="1"
+                    value="1">
+            </p>
+
+            <div class="details-actions">
+
+                <button onclick="submitHiringRequest()">
+                    Submit Hiring Request
+                </button>
+
+            </div>
+
+            <p id="hiring-message"></p>
+
+        </div>
+
+    `;
+
+}
+
+
+async function submitHiringRequest() {
+    const urlParams =
+        new URLSearchParams(window.location.search);
+
+    const workerId =
+        urlParams.get("id");
+
+    const customerName =
+        document.getElementById("customer-name").value;
+
+    const customerPhone =
+        document.getElementById("customer-phone").value;
+
+    const hiringDate =
+        document.getElementById("hiring-date").value;
+
+    const numberOfDays =
+        document.getElementById("number-of-days").value;
+
+    const message =
+        document.getElementById("hiring-message");
+
+
+    if (!customerName || !hiringDate || !numberOfDays) {
+
+        message.innerText =
+            "Please fill all required fields.";
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `http://127.0.0.1:5000/api/resource/workers/${workerId}/hire`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    customer_name: customerName,
+                    customer_phone: customerPhone,
+                    hiring_date: hiringDate,
+                    number_of_days: numberOfDays
+                })
+            }
+        );
+
+
+        const result = await response.json();
+
+
+        if (!response.ok) {
+
+            message.innerText =
+                result.message || "Hiring request failed.";
+
+            return;
+        }
+
+
+        message.innerText =
+            `✅ ${result.message} Total Cost: ₹${result.total_cost}`;
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+        message.innerText =
+            "Unable to submit hiring request.";
+
+    }
+
+}
+
+    const detailsContainer =
+        document.getElementById("worker-details");
+
+    detailsContainer.innerHTML += `
+
+        <div class="details-card" id="hiring-form">
+
+            <h2>👨‍🌾 Hire Worker</h2>
+
+            <p>
+                <strong>Customer Name:</strong>
+                <input
+                    type="text"
+                    id="customer-name"
+                    placeholder="Enter your name">
+            </p>
+
+            <p>
+                <strong>Phone Number:</strong>
+                <input
+                    type="text"
+                    id="customer-phone"
+                    placeholder="Enter phone number">
+            </p>
+
+            <p>
+                <strong>Hiring Date:</strong>
+                <input
+                    type="date"
+                    id="hiring-date">
+            </p>
+
+            <p>
+                <strong>Number of Days:</strong>
+                <input
+                    type="number"
+                    id="number-of-days"
+                    min="1"
+                    value="1">
+            </p>
+
+            <div class="details-actions">
+
+                <button onclick="submitHiringRequest()">
+                    Submit Hiring Request
+                </button>
+
+            </div>
+
+            <p id="hiring-message"></p>
+
+        </div>
+
+    `;
+
+
+
+
+        // BUTTON ACTION:
+        // Load selected worker details from Resource Center API.
+
+        loadWorkerDetails();
+
+    </script>
+
+</body>
+
+</html>

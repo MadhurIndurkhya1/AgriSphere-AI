@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Government Schemes - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>AgriSphere AI</h1>
+    <p>Government Schemes</p>
+</header>
+
+<main>
+
+    <section class="hero">
+        <h2>🏛️ Government Schemes</h2>
+
+        <p>
+            Explore government schemes and financial support
+            available for farmers.
+        </p>
+    </section>
+
+
+    <section class="resource-grid" id="schemes-container">
+
+        <p>Loading schemes...</p>
+
+    </section>
+
+</main>
+
+
+<footer>
+    <p>AgriSphere AI © 2026</p>
+</footer>
+
+
+<script>
+
+async function loadSchemes() {
+
+    const container =
+        document.getElementById("schemes-container");
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:5000/api/resource/schemes"
+        );
+
+        const schemes = await response.json();
+
+        container.innerHTML = "";
+
+        schemes.forEach(scheme => {
+
+            const card =
+                document.createElement("div");
+
+            card.className = "resource-card";
+
+            card.innerHTML = `
+
+                <h3>🏛️ ${scheme.name}</h3>
+
+                <p>
+                    ${scheme.description}
+                </p>
+
+                <button onclick="viewScheme(${scheme.id})">
+                    View Details
+                </button>
+
+            `;
+
+            container.appendChild(card);
+
+        });
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            "<p>Unable to load government schemes.</p>";
+    }
+}
+
+
+function viewScheme(id) {
+
+    window.location.href =
+        "scheme-details.html?id=" + id;
+}
+
+
+loadSchemes();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Equipment Rental - AgriSphere AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>AgriSphere AI</h1>
+        <p>Equipment Rental</p>
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+            <h2>🚜 Agricultural Equipment</h2>
+
+            <p>
+                Find agricultural equipment available for rental.
+            </p>
+        </section>
+
+
+        <!-- EQUIPMENT LIST -->
+
+        <section id="equipment-list" class="resource-grid">
+
+            <p>Loading equipment...</p>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>AgriSphere AI © 2026</p>
+    </footer>
+
+
+    <script>
+
+        async function loadEquipment() {
+
+            const equipmentList =
+                document.getElementById("equipment-list");
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/resource/equipment"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch equipment");
+                }
+
+                const equipment = await response.json();
+
+                equipmentList.innerHTML = "";
+
+                equipment.forEach(item => {
+
+                    const card = document.createElement("div");
+
+                    card.className = "resource-card";
+
+                    card.innerHTML = `
+    <h3>🚜 ${item.name}</h3>
+
+    <p>
+        <strong>Type:</strong>
+        ${item.type}
+    </p>
+
+    <button onclick="viewEquipment(${item.id})">
+        View Details
+    </button>
+`;
+
+                    equipmentList.appendChild(card);
+
+                });
+
+            } catch (error) {
+
+                console.error(error);
+
+                equipmentList.innerHTML = `
+                    <p>
+                        Unable to load equipment.
+                        Please make sure the backend server is running.
+                    </p>
+                `;
+            }
+        }
+
+
+        function viewEquipment(id) {
+
+            window.location.href =
+                "equipment-details.html?id=" + id;
+
+        }
+
+
+        // BUTTON ACTION:
+        // Load agricultural equipment from Resource Center API.
+
+        loadEquipment();
+
+    </script>
+
+</body>
+
+</html>
