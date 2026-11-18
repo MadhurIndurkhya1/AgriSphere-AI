@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="AgriSphere AI Market Intelligence: crop listings, mandi information, price references, storage and transport.">
+  <title>Market Intelligence | AgriSphere AI</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html"><span class="brand-mark">A</span><span>AgriSphere <b>AI</b></span></a><nav><a class="active" href="#marketplace">Marketplace</a><a href="#prices">Price trends</a><a href="#markets">Markets</a><a href="#logistics">Storage & transport</a></nav><span class="module-tag">Market Intelligence</span></header>
+<main>
+<section class="hero"><div><p class="eyebrow">MEMBER 05 · MARKET INTELLIGENCE</p><h1>Make better decisions.<br><em>Sell smarter.</em></h1><p class="hero-copy">Discover crop listings, compare market information and find post-harvest logistics in one place.</p><a class="button button-light" href="#marketplace">Explore marketplace <span>→</span></a></div><div class="hero-art" aria-hidden="true"><div class="sun"></div><div class="field field-one"></div><div class="field field-two"></div><div class="field field-three"></div><div class="hero-note"><span class="pulse"></span> Market tools for farmers</div></div></section>
+<div id="notice" class="notice" role="status" aria-live="polite">Connecting to Market Intelligence API…</div>
+<section class="section" id="marketplace"><div class="section-heading"><div><p class="eyebrow">TRADE WITH CONFIDENCE</p><h2>Crop marketplace</h2><p>Browse available produce listings from registered sellers.</p></div></div><form id="listingFilters" class="filter-bar"><label>Crop name<input id="cropFilter" placeholder="e.g. Wheat"></label><label>City or state<input id="cityFilter" placeholder="e.g. Bhopal"></label><button class="button" type="submit">Search listings</button></form><div id="listings" class="card-grid"><div class="empty-state">Loading listings…</div></div></section>
+<section class="section section-tint" id="prices"><div class="section-heading"><div><p class="eyebrow">MARKET REFERENCE</p><h2>Crop price insights</h2><p>Review recent recorded prices and a simple historical-average reference.</p></div></div><form id="priceForm" class="inline-form"><label for="priceCrop">Crop name</label><input id="priceCrop" required placeholder="e.g. Wheat"><button class="button" type="submit">View price reference</button></form><div id="priceResult" class="result-panel muted">Enter a crop name to check whether historical observations are available.</div></section>
+<section class="section" id="markets"><div class="section-heading"><div><p class="eyebrow">FIND A MANDI</p><h2>Nearby markets</h2><p>Search market directory by city or state.</p></div></div><form id="marketForm" class="inline-form"><label for="marketCity">City or state</label><input id="marketCity" placeholder="e.g. Indore"><button class="button" type="submit">Find markets</button></form><div id="marketsList" class="list-grid"><div class="empty-state">Loading market directory…</div></div></section>
+<section class="section section-tint" id="logistics"><div class="section-heading"><div><p class="eyebrow">AFTER THE HARVEST</p><h2>Storage & transport</h2><p>Find listed cold-storage capacity and transport providers.</p></div></div><form id="logisticsForm" class="inline-form"><label for="logisticsCity">City or service area</label><input id="logisticsCity" placeholder="e.g. Sehore"><button class="button" type="submit">Search services</button></form><div class="two-columns"><div><h3>Cold storage</h3><div id="storageList" class="stack-list">Loading…</div></div><div><h3>Transport providers</h3><div id="transportList" class="stack-list">Loading…</div></div></div></section>
+</main><footer><span>© AgriSphere AI · Market Intelligence</span><span>Information depends on verified listings and configured database records.</span></footer>
+<script src="js/app.js" defer></script>
+</body></html>
